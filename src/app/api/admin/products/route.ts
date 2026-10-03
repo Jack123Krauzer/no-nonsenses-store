@@ -28,8 +28,18 @@ export async function POST(request: NextRequest) {
     }
 
     return Response.json({ product: result.product }, { status: 201 });
-  } catch (err) {
-    console.error('[Admin] POST products error:', err);
-    return Response.json({ error: 'Failed to create product' }, { status: 500 });
-  }
+  }catch (error) {
+  console.error("CREATE PRODUCT ERROR:", error);
+
+  return Response.json(
+    {
+      error: "Failed to create product",
+      details:
+        error instanceof Error
+          ? error.message
+          : String(error),
+    },
+    { status: 500 }
+  );
+}
 }

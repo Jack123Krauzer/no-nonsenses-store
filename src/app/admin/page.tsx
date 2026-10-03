@@ -48,7 +48,7 @@ export default async function AdminDashboardPage() {
           </Link>
         ))}
       </div>
-      <ShopifyConnection />
+      {/* <ShopifyConnection /> */}
     </div>
   );
 }
