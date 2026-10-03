@@ -1,0 +1,24 @@
+.announcement { min-height: 32px; background: #20241f; color: #f7f6f2; display:flex; align-items:center; justify-content:center; gap:16px; padding:7px 18px; font-size:10px; letter-spacing:.04em; }
+.announcement span { display:flex; gap:8px; align-items:center; color:#c6cbbf; }
+.header { position:sticky; top:0; z-index:200; background:#f7f6f2f5; backdrop-filter:blur(16px); border-bottom:1px solid var(--color-border); }
+.inner { display:flex; align-items:center; justify-content:space-between; height:88px; gap:32px; }
+.logo { display:flex; align-items:center; gap:12px; flex-shrink:0; }
+.mark { display:flex; position:relative; font-size:42px; font-weight:800; line-height:1; letter-spacing:-9px; padding-right:9px; }
+.mark span { color:var(--color-accent); }
+.mark i { width:6px; height:6px; background:var(--color-accent); border-radius:50%; position:absolute; right:-2px; bottom:5px; }
+.wordmark { font-size:14px; letter-spacing:-.03em; font-weight:800; line-height:1.2; }
+.wordmark > span { display:block; font-size:7px; letter-spacing:.18em; font-weight:500; margin-top:5px; }
+.desktop { display:flex; gap:30px; font-size:12px; }
+.desktop a { position:relative; padding-block:10px; }
+.desktop a[aria-current="page"]::after { content:''; position:absolute; height:2px; left:0; right:0; bottom:0; background:var(--color-accent); }
+.desktop a:hover { color:var(--color-primary); }
+.actions { display:flex; align-items:center; gap:24px; }
+.search { display:flex; padding:8px; }
+.bag { display:flex; align-items:center; gap:9px; font-size:12px; }
+.count { display:grid; place-items:center; width:21px; height:21px; border-radius:50%; background:#e9e9e1; font-size:10px; }
+.menuButton { display:none; border:0; background:none; padding:8px; }
+.mobile { padding:10px 24px 24px; border-top:1px solid var(--color-border); }
+.mobile a { display:flex; align-items:center; justify-content:space-between; padding-block:15px; font-size:16px; border-bottom:1px solid var(--color-border); }
+@media(max-width:1000px) { .desktop { gap:20px; }.inner { gap:20px; }.wordmark { font-size:12px; }.actions { gap:15px; } }
+@media(max-width:760px) { .desktop { display:none; }.menuButton { display:flex; }.inner { height:74px; }.search { display:none; }.bagLabel { display:none; }.announcement span { display:none; }.mark { font-size:36px; }.wordmark { font-size:11px; }.wordmark > span { font-size:6px; }.actions { gap:12px; } }
+
