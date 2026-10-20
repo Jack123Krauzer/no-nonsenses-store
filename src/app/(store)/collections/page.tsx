@@ -31,7 +31,7 @@ export default async function CollectionsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10 pb-6 border-b border-white/[0.08]">
         <div>
-          <span className="text-xs font-bold uppercase tracking-widest text-violet-400">
+          <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">
             Categories
           </span>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mt-1">
@@ -53,7 +53,7 @@ export default async function CollectionsPage() {
             <Link
               key={collection.id}
               href={`/collections/${collection.handle}`}
-              className="group relative h-80 rounded-3xl overflow-hidden border border-white/[0.08] hover:border-violet-500/50 transition-all duration-500 shadow-xl flex flex-col justify-end"
+              className="group relative h-80 rounded-3xl overflow-hidden border border-white/[0.08] hover:border-zinc-500/50 transition-all duration-500 shadow-xl flex flex-col justify-end"
             >
               {collection.image ? (
                 <Image
@@ -63,7 +63,7 @@ export default async function CollectionsPage() {
                   className="object-cover object-center group-hover:scale-108 transition-transform duration-700 ease-out"
                 />
               ) : (
-                <div className="w-full h-full bg-[#181824] flex items-center justify-center text-4xl">
+                <div className="w-full h-full bg-[#181818] flex items-center justify-center text-4xl">
                   📁
                 </div>
               )}
@@ -72,10 +72,10 @@ export default async function CollectionsPage() {
 
               {/* Content */}
               <div className="relative p-6 z-10">
-                <span className="text-xs font-bold text-violet-300 uppercase tracking-wider mb-1">
+                <span className="text-xs font-bold text-zinc-300 uppercase tracking-wider mb-1">
                   Collection
                 </span>
-                <h2 className="text-2xl font-bold text-white group-hover:text-violet-200 transition-colors">
+                <h2 className="text-2xl font-bold text-white group-hover:text-zinc-200 transition-colors">
                   {collection.title}
                 </h2>
                 {collection.description && (
@@ -100,13 +100,13 @@ export default async function CollectionsPage() {
           <div className="text-5xl mb-4">🗂️</div>
           <h2 className="text-xl font-bold text-white mb-2">No collections found</h2>
           <p className="text-sm text-zinc-400 max-w-md mx-auto mb-6">
-            Create your first collection in Shopify or via the Admin Panel.
+            Our next collection is on the way. Browse the current products in the meantime.
           </p>
           <Link
-            href="/admin/collections"
-            className="px-6 py-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white text-xs font-bold transition-all shadow-lg"
+            href="/products"
+            className="px-6 py-2.5 rounded-xl bg-zinc-600 hover:bg-zinc-500 text-white text-xs font-bold transition-all shadow-lg"
           >
-            Manage Collections in Admin
+            Browse products
           </Link>
         </div>
       )}

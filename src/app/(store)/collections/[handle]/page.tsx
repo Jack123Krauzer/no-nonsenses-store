@@ -48,7 +48,7 @@ export default async function CollectionDetailPage({ params }: Props) {
   return (
     <div className="flex flex-col gap-12 pb-24">
       {/* Hero Banner */}
-      <div className="relative min-h-[320px] flex items-end overflow-hidden border-b border-white/10 bg-[#12121a]">
+      <div className="relative min-h-[320px] flex items-end overflow-hidden border-b border-white/10 bg-[#121212]">
         {collection.image && (
           <Image
             src={collection.image.url}
@@ -59,7 +59,7 @@ export default async function CollectionDetailPage({ params }: Props) {
             priority
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-[#0a0a0f]/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] via-[#0a0a0a]/60 to-transparent" />
 
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full z-10">
           <nav aria-label="Breadcrumb" className="mb-4">
@@ -82,7 +82,7 @@ export default async function CollectionDetailPage({ params }: Props) {
             </ol>
           </nav>
 
-          <span className="text-xs font-bold uppercase tracking-widest text-violet-400">
+          <span className="text-xs font-bold uppercase tracking-widest text-zinc-400">
             Collection
           </span>
           <h1 className="text-3xl sm:text-5xl font-black text-white tracking-tight mt-1">

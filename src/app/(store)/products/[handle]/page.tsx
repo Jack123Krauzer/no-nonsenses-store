@@ -1,7 +1,8 @@
-import type { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { getProductByHandle, getAllProducts } from '@/lib/shopify-storefront';
-import ProductDetailClient from './ProductDetailClient';
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { getProductByHandle, getAllProducts } from "@/lib/shopify-storefront";
+import ProductDetailClient from "./ProductDetailClient";
+import { CONCEPTS, getConceptProduct } from "@/lib/concept-products";
 
 interface Props {
   params: Promise<{ handle: string }>;
@@ -10,16 +11,20 @@ interface Props {
 export async function generateStaticParams() {
   try {
     const products = await getAllProducts(100);
-    return products.map((p) => ({ handle: p.handle }));
+    return [
+      ...products.map((p) => ({ handle: p.handle })),
+      ...CONCEPTS.map((item) => ({ handle: `concept-${item.id}` })),
+    ];
   } catch (err) {
-    console.warn('[Build] generateStaticParams for products skipped:', err);
+    console.warn("[Build] generateStaticParams for products skipped:", err);
     return [];
   }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { handle } = await params;
-  const product = await getProductByHandle(handle);
+  const product =
+    getConceptProduct(handle) ?? (await getProductByHandle(handle));
   if (!product) return {};
 
   return {
@@ -29,20 +34,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title: product.seo.title ?? product.title,
       description: product.seo.description ?? product.description.slice(0, 160),
       images: product.featuredImage
-        ? [{ url: product.featuredImage.url, alt: product.featuredImage.altText ?? product.title }]
+        ? [
+            {
+              url: product.featuredImage.url,
+              alt: product.featuredImage.altText ?? product.title,
+            },
+          ]
         : [],
-      type: 'website',
+      type: "website",
     },
   };
 }
 
 export default async function ProductDetailPage({ params }: Props) {
   const { handle } = await params;
-  const product = await getProductByHandle(handle);
+  const product =
+    getConceptProduct(handle) ?? (await getProductByHandle(handle));
 
   if (!product) {
     notFound();
   }
 
-  return <ProductDetailClient product={product} />;
+  return <ProductDetailClient key={product.id} product={product} />;
 }

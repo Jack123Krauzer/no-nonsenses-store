@@ -46,10 +46,14 @@
   color: #151515;
   background: #e4e4e4;
   transform: translateY(-150%);
+  opacity: 0;
+  pointer-events: none;
   border-radius: 8px;
 }
-.skipLink:focus {
+.skipLink:focus-visible {
   transform: translateY(0);
+  opacity: 1;
+  pointer-events: auto;
 }
 .shell :global(.btn) {
   border-radius: 30px;

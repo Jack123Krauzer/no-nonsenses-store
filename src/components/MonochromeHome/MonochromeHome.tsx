@@ -1,351 +1,28 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useId, useRef, useState, type ReactNode } from "react";
+import { useState, type ReactNode } from "react";
+import Link from "next/link";
+import ProductArtwork from "./ProductArtwork";
+import {
+  CONCEPTS as products,
+  type Concept,
+  type Filter,
+} from "@/lib/concept-products";
 import "./monochrome-home.css";
 
-type Filter = "all" | "tees" | "essentials";
-type Concept = {
-  id: string;
-  name: string;
-  subtitle: string;
-  colour: string;
-  category: Filter;
-  tone: number;
-  mood: string;
-  description: string;
-};
-const products: Concept[] = [
-  {
-    id: "overthinking",
-    name: "Probably Overthinking.",
-    subtitle: "Graphic tee / Washed black",
-    colour: "Washed black",
-    category: "tees",
-    tone: 0,
-    mood: "FOR THE 2 AM THINKER",
-    description:
-      "For the mind with 37 tabs open. A washed-black graphic concept that says the quiet part out loud.",
-  },
-  {
-    id: "battery",
-    name: "Social Battery: 1%.",
-    subtitle: "Graphic tee / Off-white",
-    colour: "Off-white",
-    category: "tees",
-    tone: 1,
-    mood: "FOR THE SELECTIVELY SOCIAL",
-    description:
-      "Available for meaningful conversations. Temporarily unavailable for everything else. A graphic concept for the selectively social.",
-  },
-  {
-    id: "essential",
-    name: "The Unbothered Essential.",
-    subtitle: "Everyday tee / Ash grey",
-    colour: "Ash grey",
-    category: "essentials",
-    tone: 2,
-    mood: "FOR THE QUIETLY UNBOTHERED",
-    description:
-      "Minimal words. Maximum you. A quiet ash-grey concept for days when the brand name says enough.",
-  },
-];
 const filters: { id: Filter; label: string }[] = [
   { id: "all", label: "All moods" },
   { id: "tees", label: "Graphic tees" },
   { id: "essentials", label: "The essentials" },
 ];
-const sizes = ["S", "M", "L", "XL", "XXL"];
 
-function ProductArtwork({ tone }: { tone: number }) {
-  const id = useId();
-  if (tone === 0)
-    return (
-      <div className="tee-scene black-tee">
-        <svg
-          className="shirt"
-          viewBox="0 0 400 440"
-          role="img"
-          aria-label="Black graphic tee reading Probably Overthinking"
-        >
-          <defs>
-            <linearGradient id={`${id}-black`} x1="0" x2="1">
-              <stop stopColor="#1a1a1a" />
-              <stop offset=".3" stopColor="#3a3a3a" />
-              <stop offset=".55" stopColor="#282828" />
-              <stop offset=".8" stopColor="#363636" />
-              <stop offset="1" stopColor="#181818" />
-            </linearGradient>
-            <filter id={`${id}-shadow`}>
-              <feDropShadow
-                dx="0"
-                dy="20"
-                stdDeviation="12"
-                floodOpacity=".45"
-              />
-            </filter>
-          </defs>
-          <g filter={`url(#${id}-shadow)`}>
-            <path
-              d="M137 49 99 62 30 135 80 189 110 165 98 384Q200 402 302 384L290 165 320 189 370 135 301 62 263 49Q200 84 137 49Z"
-              fill={`url(#${id}-black)`}
-              stroke="#4c4c4c"
-              strokeWidth="1.4"
-            />
-            <path
-              d="M137 49Q145 111 200 111T263 49Q200 80 137 49"
-              fill="#151515"
-              stroke="#4e4e4e"
-              strokeWidth="3"
-            />
-            <path
-              d="M111 165 120 112M290 165 280 112M111 374Q200 389 291 374"
-              fill="none"
-              stroke="#575757"
-              opacity=".4"
-            />
-            <path
-              d="M132 198q-9 72 0 152M269 206q12 69 0 144"
-              fill="none"
-              stroke="#5b5b5b"
-              opacity=".2"
-              strokeWidth="4"
-            />
-          </g>
-          <text
-            x="200"
-            y="191"
-            textAnchor="middle"
-            fill="#eaeaea"
-            fontFamily="Arial,sans-serif"
-            fontWeight="800"
-            fontSize="19"
-            letterSpacing="-1"
-          >
-            PROBABLY
-          </text>
-          <text
-            x="200"
-            y="214"
-            textAnchor="middle"
-            fill="#eaeaea"
-            fontFamily="Arial,sans-serif"
-            fontWeight="800"
-            fontSize="19"
-            letterSpacing="-1"
-          >
-            OVERTHINKING.
-          </text>
-          <text
-            x="200"
-            y="235"
-            textAnchor="middle"
-            fill="#b2b2b2"
-            fontFamily="Arial"
-            fontSize="5"
-            letterSpacing="2"
-          >
-            NO NONSENSES · INSIDE VOICE CLUB
-          </text>
-        </svg>
-      </div>
-    );
-  if (tone === 1)
-    return (
-      <div className="tee-scene white-tee">
-        <svg
-          className="shirt"
-          viewBox="0 0 400 440"
-          role="img"
-          aria-label="Off-white graphic tee reading social battery 1 percent"
-        >
-          <defs>
-            <filter id={`${id}-shadow`}>
-              <feDropShadow
-                dx="0"
-                dy="20"
-                stdDeviation="12"
-                floodOpacity=".45"
-              />
-            </filter>
-            <linearGradient id={`${id}-cream`} x1="0" x2="1">
-              <stop stopColor="#a3a3a3" />
-              <stop offset=".3" stopColor="#dedede" />
-              <stop offset=".55" stopColor="#c9c9c9" />
-              <stop offset=".8" stopColor="#e3e3e3" />
-              <stop offset="1" stopColor="#989898" />
-            </linearGradient>
-          </defs>
-          <g filter={`url(#${id}-shadow)`}>
-            <path
-              d="M137 49 99 62 30 135 80 189 110 165 98 384Q200 402 302 384L290 165 320 189 370 135 301 62 263 49Q200 84 137 49Z"
-              fill={`url(#${id}-cream)`}
-              stroke="#d1d1d1"
-              strokeWidth="1.4"
-            />
-            <path
-              d="M137 49Q145 111 200 111T263 49Q200 80 137 49"
-              fill="#858585"
-              stroke="#bcbcbc"
-              strokeWidth="3"
-            />
-            <path
-              d="M111 165 120 112M290 165 280 112M111 374Q200 389 291 374"
-              fill="none"
-              stroke="#818181"
-              opacity=".5"
-            />
-            <path
-              d="M132 198q-9 72 0 152M269 206q12 69 0 144"
-              fill="none"
-              stroke="#818181"
-              opacity=".15"
-              strokeWidth="4"
-            />
-          </g>
-          <text
-            x="200"
-            y="190"
-            textAnchor="middle"
-            fill="#333333"
-            fontFamily="Arial,sans-serif"
-            fontWeight="700"
-            fontSize="21"
-            letterSpacing="-1"
-          >
-            social battery
-          </text>
-          <rect
-            x="170"
-            y="204"
-            width="58"
-            height="24"
-            rx="4"
-            fill="none"
-            stroke="#3c3c3c"
-            strokeWidth="2"
-          />
-          <rect x="229" y="211" width="4" height="10" rx="1" fill="#3c3c3c" />
-          <rect x="174" y="208" width="5" height="16" rx="1" fill="#3c3c3c" />
-          <text
-            x="202"
-            y="221"
-            textAnchor="middle"
-            fill="#3c3c3c"
-            fontFamily="Arial"
-            fontSize="12"
-          >
-            1%
-          </text>
-          <text
-            x="200"
-            y="248"
-            textAnchor="middle"
-            fill="#666666"
-            fontFamily="Arial"
-            fontSize="5"
-            letterSpacing="2"
-          >
-            NO NONSENSES · RECHARGING
-          </text>
-        </svg>
-      </div>
-    );
-  if (tone === 2)
-    return (
-      <div className="tee-scene grey-tee">
-        <svg
-          className="shirt"
-          viewBox="0 0 400 440"
-          role="img"
-          aria-label="Ash-grey essential tee with No Nonsenses print"
-        >
-          <defs>
-            <filter id={`${id}-shadow`}>
-              <feDropShadow
-                dx="0"
-                dy="20"
-                stdDeviation="12"
-                floodOpacity=".45"
-              />
-            </filter>
-            <linearGradient id={`${id}-sage`} x1="0" x2="1">
-              <stop stopColor="#5e5e5e" />
-              <stop offset=".3" stopColor="#9d9d9d" />
-              <stop offset=".55" stopColor="#858585" />
-              <stop offset=".8" stopColor="#a4a4a4" />
-              <stop offset="1" stopColor="#5e5e5e" />
-            </linearGradient>
-          </defs>
-          <g filter={`url(#${id}-shadow)`}>
-            <path
-              d="M137 49 99 62 30 135 80 189 110 165 98 384Q200 402 302 384L290 165 320 189 370 135 301 62 263 49Q200 84 137 49Z"
-              fill={`url(#${id}-sage)`}
-              stroke="#aeaeae"
-              strokeWidth="1.4"
-            />
-            <path
-              d="M137 49Q145 111 200 111T263 49Q200 80 137 49"
-              fill="#424242"
-              stroke="#8e8e8e"
-              strokeWidth="3"
-            />
-            <path
-              d="M111 165 120 112M290 165 280 112M111 374Q200 389 291 374"
-              fill="none"
-              stroke="#5b5b5b"
-              opacity=".65"
-            />
-            <path
-              d="M132 198q-9 72 0 152M269 206q12 69 0 144"
-              fill="none"
-              stroke="#454545"
-              opacity=".15"
-              strokeWidth="4"
-            />
-          </g>
-          <text
-            x="200"
-            y="200"
-            textAnchor="middle"
-            fill="#2e2e2e"
-            fontFamily="Arial,sans-serif"
-            fontWeight="800"
-            fontSize="18"
-            letterSpacing="-1"
-          >
-            NO NONSENSES
-          </text>
-          <text
-            x="200"
-            y="217"
-            textAnchor="middle"
-            fill="#424242"
-            fontFamily="Arial"
-            fontSize="5"
-            letterSpacing="3"
-          >
-            LESS PRETENDING. MORE YOU.
-          </text>
-        </svg>
-      </div>
-    );
-  return null;
-}
-
-function ConceptCard({
-  product,
-  onOpen,
-}: {
-  product: Concept;
-  onOpen: () => void;
-}) {
+function ConceptCard({ product }: { product: Concept }) {
   return (
     <article className="product">
-      <button
-        type="button"
+      <Link
+        href={`/products/concept-${product.id}`}
         className="product-image"
-        onClick={onOpen}
         aria-label={`View ${product.name}`}
       >
         <span className="product-tag">{product.mood}</span>
@@ -353,10 +30,12 @@ function ConceptCard({
         <span className="quick-view">
           Explore this mood <b>↗</b>
         </span>
-      </button>
+      </Link>
       <div className="product-info">
         <div>
-          <h3>{product.name}</h3>
+          <Link href={`/products/concept-${product.id}`}>
+            <h3>{product.name}</h3>
+          </Link>
           <p>{product.subtitle}</p>
         </div>
         <span
@@ -370,28 +49,9 @@ function ConceptCard({
 
 export default function MonochromeHome({ children }: { children: ReactNode }) {
   const [activeFilter, setActiveFilter] = useState<Filter>("all");
-  const [activeProduct, setActiveProduct] = useState<Concept | null>(null);
-  const [selectedSize, setSelectedSize] = useState("M");
-  const dialog = useRef<HTMLDialogElement>(null);
   const visibleProducts = products.filter(
     (product) => activeFilter === "all" || product.category === activeFilter,
   );
-  useEffect(() => {
-    if (!activeProduct) return;
-    const element = dialog.current;
-    if (!element) return;
-    const previousOverflow = document.body.style.overflow;
-    element.showModal();
-    document.body.style.overflow = "hidden";
-    return () => {
-      element.close();
-      document.body.style.overflow = previousOverflow;
-    };
-  }, [activeProduct]);
-  function closeProduct() {
-    setActiveProduct(null);
-    setSelectedSize("M");
-  }
   return (
     <div className="monochrome-home">
       <section className="hero" aria-labelledby="hero-title">
@@ -412,7 +72,8 @@ export default function MonochromeHome({ children }: { children: ReactNode }) {
             Wear your <span>inside voice.</span>
           </h1>
           <p>
-            Everyday clothing for the things you think. And probably shouldn’t say.
+            Everyday clothing for the things you think. And probably shouldn’t
+            say.
           </p>
           <div className="hero-actions">
             <a className="button light" href="#collection">
@@ -522,11 +183,7 @@ export default function MonochromeHome({ children }: { children: ReactNode }) {
         </div>
         <div className="product-grid" id="products">
           {visibleProducts.map((product) => (
-            <ConceptCard
-              key={product.id}
-              product={product}
-              onOpen={() => setActiveProduct(product)}
-            />
+            <ConceptCard key={product.id} product={product} />
           ))}
         </div>
         <div className="collection-note">
@@ -678,10 +335,9 @@ export default function MonochromeHome({ children }: { children: ReactNode }) {
               How do I choose my size?<span>+</span>
             </summary>
             <p>
-              Open any collection card to explore the design and see the fit
-              guide. The final garment measurements and size chart will be
-              available at launch, so you can compare them with a tee you
-              already love.
+              Open any product details page to compare the size chart in
+              centimetres or inches. The concept chart is illustrative; final
+              garment measurements will be confirmed before sales open.
             </p>
           </details>
           <details>
@@ -712,87 +368,6 @@ export default function MonochromeHome({ children }: { children: ReactNode }) {
           A first look. A little attitude. A whole lot to come.
         </span>
       </section>
-
-      <dialog
-        ref={dialog}
-        aria-labelledby="concept-title"
-        onCancel={closeProduct}
-        onClose={() => {
-          if (activeProduct) closeProduct();
-        }}
-        onClick={(event) => {
-          if (event.target !== event.currentTarget) return;
-          const rect = event.currentTarget.getBoundingClientRect();
-          if (
-            event.clientX < rect.left ||
-            event.clientX > rect.right ||
-            event.clientY < rect.top ||
-            event.clientY > rect.bottom
-          )
-            closeProduct();
-        }}
-      >
-        <button
-          type="button"
-          className="dialog-close"
-          aria-label="Close product details"
-          onClick={closeProduct}
-        >
-          ×
-        </button>
-        {activeProduct ? (
-          <div className="dialog-grid">
-            <div id="dialog-art">
-              <ProductArtwork tone={activeProduct.tone} />
-            </div>
-            <div className="dialog-copy">
-              <span className="kicker">COLLECTION 001 / CONCEPT PREVIEW</span>
-              <h2 id="concept-title">{activeProduct.name}</h2>
-              <p>{activeProduct.description}</p>
-              <span className="detail-label">COLOUR</span>
-              <p>{activeProduct.colour}</p>
-              <span className="detail-label">EXPLORE THE FIT</span>
-              <div className="sizes" role="group" aria-label="Explore a size">
-                {sizes.map((size) => (
-                  <button
-                    type="button"
-                    key={size}
-                    className={selectedSize === size ? "selected" : undefined}
-                    aria-pressed={selectedSize === size}
-                    onClick={() => setSelectedSize(size)}
-                  >
-                    {size}
-                  </button>
-                ))}
-              </div>
-              <p id="size-feedback" aria-live="polite">
-                {selectedSize} selected. Final measurements coming at launch.
-              </p>
-              <details className="fit-guide">
-                <summary>
-                  How to find your fit <span>+</span>
-                </summary>
-                <p>
-                  Lay a favourite tee flat. Measure across the chest and from
-                  shoulder to hem. Compare with the final garment measurements
-                  when the collection launches.
-                </p>
-              </details>
-              <div className="launch-note">
-                <i className="status-dot" />
-                <div>
-                  <b>In the works.</b>
-                  <p>
-                    This design is a preview. Pricing and ordering will be
-                    announced at launch. You can browse currently available
-                    products in the store below.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        ) : null}
-      </dialog>
     </div>
   );
 }

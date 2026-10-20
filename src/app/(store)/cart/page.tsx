@@ -1,9 +1,13 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { formatPrice } from '@/lib/shopify-storefront';
+import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { formatPrice } from "@/lib/shopify-storefront";
+import {
+  parseCart,
+  saveCart as persistCart,
+} from "@/components/Cart/cart-store";
 
 interface CartItem {
   variantId: string;
@@ -51,13 +55,15 @@ export default function CartPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [paying, setPaying] = useState(false);
-  const [paymentStatus, setPaymentStatus] = useState<'idle' | 'success' | 'error'>('idle');
-  const [paymentMessage, setPaymentMessage] = useState('');
+  const [paymentStatus, setPaymentStatus] = useState<
+    "idle" | "success" | "error"
+  >("idle");
+  const [paymentMessage, setPaymentMessage] = useState("");
 
   const syncCart = useCallback(() => {
     try {
-      const stored = localStorage.getItem('nns_cart');
-      setCart(stored ? JSON.parse(stored) : []);
+      const stored = localStorage.getItem("nns_cart");
+      setCart(parseCart(stored));
     } catch {
       setCart([]);
     }
@@ -66,21 +72,37 @@ export default function CartPage() {
   useEffect(() => {
     syncCart();
     setLoading(false);
-    window.addEventListener('nns:cart-updated', syncCart);
-    return () => window.removeEventListener('nns:cart-updated', syncCart);
+    window.addEventListener("nns:cart-updated", syncCart);
+    window.addEventListener("storage", syncCart);
+    return () => {
+      window.removeEventListener("nns:cart-updated", syncCart);
+      window.removeEventListener("storage", syncCart);
+    };
   }, [syncCart]);
 
   const saveCart = (updated: CartItem[]) => {
-    setCart(updated);
-    localStorage.setItem('nns_cart', JSON.stringify(updated));
-    window.dispatchEvent(new Event('nns:cart-updated'));
+    try {
+      persistCart(updated);
+      setCart(updated);
+    } catch {
+      setPaymentStatus("error");
+      setPaymentMessage(
+        "Your bag could not be saved. Check browser storage and try again.",
+      );
+    }
   };
 
   const updateQuantity = (variantId: string, quantity: number) => {
     if (quantity <= 0) {
       saveCart(cart.filter((i) => i.variantId !== variantId));
-    } else {
-      saveCart(cart.map((i) => (i.variantId === variantId ? { ...i, quantity } : i)));
+    } else if (
+      quantity <= 10 ||
+      quantity <
+        (cart.find((item) => item.variantId === variantId)?.quantity ?? 0)
+    ) {
+      saveCart(
+        cart.map((i) => (i.variantId === variantId ? { ...i, quantity } : i)),
+      );
     }
   };
 
@@ -90,22 +112,22 @@ export default function CartPage() {
 
   const subtotal = cart.reduce(
     (sum, item) => sum + parseFloat(item.price) * item.quantity,
-    0
+    0,
   );
 
-  const currencyCode = cart[0]?.currencyCode ?? 'INR';
+  const currencyCode = cart[0]?.currencyCode ?? "INR";
   const freeShippingMet = subtotal >= FREE_SHIPPING_THRESHOLD;
   const shippingAmount = freeShippingMet || subtotal === 0 ? 0 : 149;
   const totalAmount = subtotal + shippingAmount;
 
   const loadRazorpayScript = (): Promise<boolean> => {
     return new Promise((resolve) => {
-      if (typeof window.Razorpay !== 'undefined') {
+      if (typeof window.Razorpay !== "undefined") {
         resolve(true);
         return;
       }
-      const script = document.createElement('script');
-      script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+      const script = document.createElement("script");
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
       script.onload = () => resolve(true);
       script.onerror = () => resolve(false);
       document.body.appendChild(script);
@@ -116,51 +138,47 @@ export default function CartPage() {
     if (cart.length === 0 || paying) return;
 
     setPaying(true);
-    setPaymentStatus('idle');
+    setPaymentStatus("idle");
 
+    let opened = false;
     try {
-      const loaded = await loadRazorpayScript();
-      if (!loaded) {
-        throw new Error('Razorpay SDK failed to load. Please check your internet connection.');
-      }
-
-      // Create order via API
-      const res = await fetch('/api/razorpay/create-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      // The server confirms current prices and accepts variant IDs and quantities.
+      const res = await fetch("/api/razorpay/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          amount: totalAmount,
-          currency: currencyCode,
-          receipt: `rcpt_${Date.now()}`,
-          notes: {
-            itemCount: cart.length.toString(),
-            items: cart.map((i) => `${i.title} (x${i.quantity})`).join(', ').slice(0, 100),
-          },
+          items: cart.map((item) => ({
+            variantId: item.variantId,
+            quantity: item.quantity,
+          })),
         }),
       });
 
       if (!res.ok) {
         const errData = await res.json();
-        throw new Error(errData.error || 'Failed to create Razorpay order');
+        throw new Error(errData.error || "Failed to create Razorpay order");
       }
 
       const orderData = await res.json();
-      const razorpayKey =
-        process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || 'rzp_test_TjPy2mTtEAa0IB';
+      if (!orderData.keyId || !orderData.orderId)
+        throw new Error("Checkout returned incomplete order details.");
+      const loaded = await loadRazorpayScript();
+      if (!loaded)
+        throw new Error("The payment window could not load. Please try again.");
 
       const options: RazorpayOptions = {
-        key: razorpayKey,
+        key: orderData.keyId,
         amount: orderData.amount,
         currency: orderData.currency,
-        name: 'No-Nonsense Store',
-        description: `Order #${orderData.id}`,
-        order_id: orderData.id,
-        theme: { color: '#8b5cf6' },
+        name: "No-Nonsense Store",
+        description: `Order #${orderData.orderId}`,
+        order_id: orderData.orderId,
+        theme: { color: "#222222" },
         handler: async (response: RazorpayResponse) => {
           try {
-            const verifyRes = await fetch('/api/razorpay/verify', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+            const verifyRes = await fetch("/api/razorpay/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
@@ -169,17 +187,26 @@ export default function CartPage() {
             });
 
             const verifyData = await verifyRes.json();
-            if (verifyData.verified) {
-              setPaymentStatus('success');
-              setPaymentMessage(`Payment verified! ID: ${response.razorpay_payment_id}`);
+            if (verifyRes.ok && verifyData.success) {
+              setPaymentStatus("success");
+              setPaymentMessage(
+                `Payment verified! ID: ${response.razorpay_payment_id}`,
+              );
               saveCart([]);
             } else {
-              setPaymentStatus('error');
-              setPaymentMessage('Payment signature verification failed. Please contact support.');
+              setPaymentStatus("error");
+              setPaymentMessage(
+                verifyData.error ||
+                  "Payment could not be confirmed. Keep your payment reference and contact the store.",
+              );
             }
           } catch {
-            setPaymentStatus('error');
-            setPaymentMessage('Error verifying payment.');
+            setPaymentStatus("error");
+            setPaymentMessage(
+              "Payment could not be confirmed. Keep your payment reference and contact the store before retrying.",
+            );
+          } finally {
+            setPaying(false);
           }
         },
         modal: {
@@ -191,11 +218,12 @@ export default function CartPage() {
 
       const rzp = new window.Razorpay(options);
       rzp.open();
+      opened = true;
     } catch (err) {
-      setPaymentStatus('error');
-      setPaymentMessage(err instanceof Error ? err.message : 'Checkout failed');
+      setPaymentStatus("error");
+      setPaymentMessage(err instanceof Error ? err.message : "Checkout failed");
     } finally {
-      setPaying(false);
+      if (!opened) setPaying(false);
     }
   };
 
@@ -216,21 +244,21 @@ export default function CartPage() {
           Shopping Cart
         </h1>
         <p className="text-sm text-zinc-400 mt-1">
-          {cart.length} item{cart.length !== 1 ? 's' : ''} in your order
+          {cart.length} item{cart.length !== 1 ? "s" : ""} in your order
         </p>
       </div>
 
       {/* Payment Success Banner */}
-      {paymentStatus === 'success' && (
-        <div className="mb-10 p-8 rounded-3xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 flex flex-col items-center text-center gap-3">
-          <div className="w-14 h-14 rounded-full bg-emerald-500/20 flex items-center justify-center text-2xl text-emerald-400 mb-1">
+      {paymentStatus === "success" && (
+        <div className="mb-10 p-8 rounded-3xl bg-zinc-500/10 border border-zinc-500/30 text-zinc-300 flex flex-col items-center text-center gap-3">
+          <div className="w-14 h-14 rounded-full bg-zinc-500/20 flex items-center justify-center text-2xl text-zinc-400 mb-1">
             ✓
           </div>
           <h2 className="text-2xl font-black text-white">Order Confirmed!</h2>
           <p className="text-sm text-zinc-300 max-w-md">{paymentMessage}</p>
           <Link
             href="/products"
-            className="mt-3 px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs uppercase tracking-wider transition-all"
+            className="mt-3 px-6 py-2.5 rounded-xl bg-zinc-600 hover:bg-zinc-500 text-white font-bold text-xs uppercase tracking-wider transition-all"
           >
             Continue Shopping
           </Link>
@@ -238,11 +266,11 @@ export default function CartPage() {
       )}
 
       {/* Payment Error Banner */}
-      {paymentStatus === 'error' && (
-        <div className="mb-8 p-4 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm flex items-center justify-between">
+      {paymentStatus === "error" && (
+        <div className="mb-8 p-4 rounded-2xl bg-zinc-500/10 border border-zinc-500/30 text-zinc-300 text-sm flex items-center justify-between">
           <span>{paymentMessage}</span>
           <button
-            onClick={() => setPaymentStatus('idle')}
+            onClick={() => setPaymentStatus("idle")}
             className="text-xs font-bold uppercase hover:underline"
           >
             Dismiss
@@ -250,16 +278,19 @@ export default function CartPage() {
         </div>
       )}
 
-      {cart.length === 0 && paymentStatus !== 'success' ? (
+      {cart.length === 0 && paymentStatus !== "success" ? (
         <div className="text-center py-24 rounded-3xl bg-white/[0.02] border border-white/10">
           <div className="text-6xl mb-4">🛒</div>
-          <h2 className="text-2xl font-bold text-white mb-2">Your cart is empty</h2>
+          <h2 className="text-2xl font-bold text-white mb-2">
+            Your cart is empty
+          </h2>
           <p className="text-sm text-zinc-400 max-w-md mx-auto mb-6">
-            Looks like you haven&apos;t added any items yet. Explore our curated collections.
+            Looks like you haven&apos;t added any items yet. Explore our curated
+            collections.
           </p>
           <Link
             href="/products"
-            className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-bold text-sm tracking-wide transition-all shadow-[0_0_25px_rgba(139,92,246,0.35)]"
+            className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-zinc-600 to-zinc-600 hover:from-zinc-500 hover:to-zinc-500 text-white font-bold text-sm tracking-wide transition-all shadow-[0_0_25px_rgba(255,255,255,0.35)]"
           >
             Start Shopping →
           </Link>
@@ -273,20 +304,24 @@ export default function CartPage() {
               <div className="flex items-center justify-between text-xs font-semibold mb-2">
                 <span className="text-zinc-300">
                   {freeShippingMet
-                    ? '🎉 You unlocked Free Express Shipping!'
+                    ? "🎉 You unlocked Free Shipping!"
                     : `Add ₹${FREE_SHIPPING_THRESHOLD - subtotal} more for Free Shipping`}
                 </span>
-                <span className="text-violet-400 font-bold">
-                  {Math.min(100, Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100))}%
+                <span className="text-zinc-400 font-bold">
+                  {Math.min(
+                    100,
+                    Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100),
+                  )}
+                  %
                 </span>
               </div>
               <div className="w-full h-2 rounded-full bg-white/10 overflow-hidden">
                 <div
-                  className="h-full bg-gradient-to-r from-violet-500 to-pink-500 rounded-full transition-all duration-500"
+                  className="h-full bg-gradient-to-r from-zinc-500 to-zinc-500 rounded-full transition-all duration-500"
                   style={{
                     width: `${Math.min(
                       100,
-                      Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100)
+                      Math.round((subtotal / FREE_SHIPPING_THRESHOLD) * 100),
                     )}%`,
                   }}
                 />
@@ -298,7 +333,7 @@ export default function CartPage() {
               {cart.map((item) => (
                 <div
                   key={item.variantId}
-                  className="p-4 sm:p-5 rounded-2xl bg-[#12121a] border border-white/[0.06] flex items-center gap-4 sm:gap-6 shadow-md"
+                  className="p-4 sm:p-5 rounded-2xl bg-[#121212] border border-white/[0.06] flex items-center gap-4 sm:gap-6 shadow-md"
                 >
                   {/* Thumb */}
                   <div className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden bg-black/40 border border-white/10 shrink-0">
@@ -320,15 +355,20 @@ export default function CartPage() {
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <Link
-                      href={item.handle ? `/products/${item.handle}` : '/products'}
-                      className="font-bold text-white text-sm sm:text-base hover:text-violet-300 transition-colors line-clamp-1"
+                      href={
+                        item.handle ? `/products/${item.handle}` : "/products"
+                      }
+                      className="font-bold text-white text-sm sm:text-base hover:text-zinc-300 transition-colors line-clamp-1"
                     >
                       {item.title}
                     </Link>
-                    {item.variantTitle && item.variantTitle !== 'Default Title' && (
-                      <p className="text-xs text-zinc-400 mt-0.5">{item.variantTitle}</p>
-                    )}
-                    <div className="text-sm font-bold text-violet-400 mt-2 sm:hidden">
+                    {item.variantTitle &&
+                      item.variantTitle !== "Default Title" && (
+                        <p className="text-xs text-zinc-400 mt-0.5">
+                          {item.variantTitle}
+                        </p>
+                      )}
+                    <div className="text-sm font-bold text-zinc-400 mt-2 sm:hidden">
                       {formatPrice(item.price, currencyCode)}
                     </div>
                   </div>
@@ -337,7 +377,10 @@ export default function CartPage() {
                   <div className="flex items-center bg-white/[0.05] border border-white/10 rounded-xl px-2 py-1 shrink-0">
                     <button
                       type="button"
-                      onClick={() => updateQuantity(item.variantId, item.quantity - 1)}
+                      aria-label={`Decrease quantity of ${item.title}`}
+                      onClick={() =>
+                        updateQuantity(item.variantId, item.quantity - 1)
+                      }
                       className="w-7 h-7 flex items-center justify-center text-zinc-300 hover:text-white font-bold"
                     >
                       −
@@ -347,7 +390,11 @@ export default function CartPage() {
                     </span>
                     <button
                       type="button"
-                      onClick={() => updateQuantity(item.variantId, item.quantity + 1)}
+                      aria-label={`Increase quantity of ${item.title}`}
+                      disabled={item.quantity >= 10}
+                      onClick={() =>
+                        updateQuantity(item.variantId, item.quantity + 1)
+                      }
                       className="w-7 h-7 flex items-center justify-center text-zinc-300 hover:text-white font-bold"
                     >
                       +
@@ -359,7 +406,7 @@ export default function CartPage() {
                     <div className="text-base font-bold text-white">
                       {formatPrice(
                         (parseFloat(item.price) * item.quantity).toString(),
-                        currencyCode
+                        currencyCode,
                       )}
                     </div>
                     <div className="text-xs text-zinc-500">
@@ -371,8 +418,9 @@ export default function CartPage() {
                   <button
                     type="button"
                     onClick={() => removeItem(item.variantId)}
-                    className="w-8 h-8 rounded-lg hover:bg-rose-500/10 text-zinc-500 hover:text-rose-400 flex items-center justify-center transition-colors shrink-0"
+                    className="w-8 h-8 rounded-lg hover:bg-zinc-500/10 text-zinc-500 hover:text-zinc-400 flex items-center justify-center transition-colors shrink-0"
                     title="Remove item"
+                    aria-label={`Remove ${item.title}`}
                   >
                     ✕
                   </button>
@@ -382,8 +430,10 @@ export default function CartPage() {
           </div>
 
           {/* Order Summary Sidebar */}
-          <div className="lg:col-span-4 p-6 sm:p-7 rounded-3xl bg-[#12121a] border border-white/10 shadow-2xl flex flex-col gap-6 sticky top-28">
-            <h2 className="text-xl font-bold text-white tracking-tight">Order Summary</h2>
+          <div className="lg:col-span-4 p-6 sm:p-7 rounded-3xl bg-[#121212] border border-white/10 shadow-2xl flex flex-col gap-6 lg:sticky lg:top-6">
+            <h2 className="text-xl font-bold text-white tracking-tight">
+              Order Summary
+            </h2>
 
             <div className="space-y-3 text-sm">
               <div className="flex justify-between text-zinc-300">
@@ -396,7 +446,7 @@ export default function CartPage() {
                 <span>Shipping</span>
                 <span className="font-semibold text-white">
                   {freeShippingMet ? (
-                    <span className="text-emerald-400">FREE</span>
+                    <span className="text-zinc-400">FREE</span>
                   ) : (
                     formatPrice(shippingAmount.toString(), currencyCode)
                   )}
@@ -404,7 +454,7 @@ export default function CartPage() {
               </div>
               <div className="pt-3 border-t border-white/10 flex justify-between text-base sm:text-lg font-bold text-white">
                 <span>Total</span>
-                <span className="text-violet-400">
+                <span className="text-zinc-400">
                   {formatPrice(totalAmount.toString(), currencyCode)}
                 </span>
               </div>
@@ -415,7 +465,7 @@ export default function CartPage() {
               type="button"
               onClick={handleCheckout}
               disabled={paying}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-violet-600 via-indigo-600 to-fuchsia-600 hover:from-violet-500 hover:to-fuchsia-500 text-white font-bold text-sm uppercase tracking-wider transition-all shadow-[0_0_30px_rgba(139,92,246,0.4)] hover:shadow-[0_0_40px_rgba(236,72,153,0.55)] hover:scale-[1.02] flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-zinc-600 via-zinc-600 to-zinc-600 hover:from-zinc-500 hover:to-zinc-500 text-white font-bold text-sm uppercase tracking-wider transition-all shadow-[0_0_30px_rgba(255,255,255,0.4)] hover:shadow-[0_0_40px_rgba(255,255,255,0.55)] hover:scale-[1.02] flex items-center justify-center gap-2"
             >
               {paying ? (
                 <>
@@ -424,7 +474,8 @@ export default function CartPage() {
                 </>
               ) : (
                 <>
-                  Pay {formatPrice(totalAmount.toString(), currencyCode)} with Razorpay
+                  Pay {formatPrice(totalAmount.toString(), currencyCode)} with
+                  Razorpay
                 </>
               )}
             </button>
@@ -433,11 +484,13 @@ export default function CartPage() {
             <div className="pt-4 border-t border-white/[0.06] flex flex-col gap-2 text-xs text-zinc-400">
               <div className="flex items-center gap-2">
                 <span>🛡</span>
-                <span>Secured by Razorpay 256-Bit SSL encryption</span>
+                <span>Payments processed by Razorpay</span>
               </div>
               <div className="flex items-center gap-2">
                 <span>⚡</span>
-                <span>Supports UPI (Google Pay, PhonePe, Paytm) & Cards</span>
+                <span>
+                  Available payment methods are shown in the payment window.
+                </span>
               </div>
             </div>
           </div>

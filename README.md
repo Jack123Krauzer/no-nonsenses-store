@@ -15,7 +15,9 @@ Open `http://localhost:3000/`. Stop any running Next.js server and clear `.next`
 - Native React homepage: `src/components/MonochromeHome/MonochromeHome.tsx`
 - Homepage styling: `src/components/MonochromeHome/monochrome-home.css`
 - Shared store theme: `src/app/(store)/store-layout.module.css`
-- Collection filters, product dialogs, size selection, mobile navigation, catalog, cart, admin, Shopify, and payment routes are retained.
+- Collection filters, consistent product detail pages, size comparison charts, mobile navigation, catalog search, cart, admin, Shopify, and payment routes are retained.
+- Sample tees and Shopify products both open `/products/[handle]`; no product popups are used.
+- Size charts provide cm/in conversion and a comparison worksheet. Reference measurements are illustrative until verified supplier data is supplied.
 - Concept clothing previews are clearly separate from the current Shopify catalog.
 - Deploy using the standard Next.js preset from the `black-white-ui` branch.
 
