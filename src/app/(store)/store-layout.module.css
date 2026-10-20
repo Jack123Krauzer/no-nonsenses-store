@@ -1,5 +1,87 @@
-.shell { min-height: 100vh; display: flex; flex-direction: column; }
-.main { flex: 1; }
-.skipLink { position: fixed; top: 8px; left: 8px; z-index: 500; padding: 12px 18px; background: white; transform: translateY(-150%); }
-.skipLink:focus { transform: translateY(0); }
-
+.shell {
+  --color-bg: #080b08;
+  --color-bg-secondary: #121a11;
+  --color-bg-card: #141d13;
+  --color-bg-card-hover: #1c2819;
+  --color-border: #ffffff1c;
+  --color-border-accent: #afc49f;
+  --color-primary: #c0d2b1;
+  --color-primary-light: #dce8d2;
+  --color-primary-dark: #8fa67d;
+  --color-primary-glow: #b6ce9820;
+  --color-accent: #b7c8ad;
+  --color-accent-light: #d3e1c8;
+  --color-accent-glow: #b7c8ad18;
+  --color-text: #f0f4eb;
+  --color-text-secondary: #abb8a2;
+  --color-text-muted: #8a9b80;
+  --color-success: #a8d4a4;
+  --color-warning: #e2c485;
+  --color-danger: #f3978f;
+  --color-info: #9ebed4;
+  --gradient-primary: linear-gradient(135deg, #b4c8a1, #deead3);
+  --gradient-card: linear-gradient(145deg, #192317, #0d130c);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-bg);
+  color: var(--color-text);
+  width: min(1536px, calc(100% - 48px));
+  margin: 24px auto;
+  border-radius: 28px;
+  overflow: clip;
+  color-scheme: dark;
+}
+.main {
+  flex: 1;
+  min-width: 0;
+}
+.skipLink {
+  position: fixed;
+  top: 8px;
+  left: 8px;
+  z-index: 500;
+  padding: 12px 18px;
+  color: #10170d;
+  background: #dce8d1;
+  transform: translateY(-150%);
+  border-radius: 8px;
+}
+.skipLink:focus {
+  transform: translateY(0);
+}
+.shell :global(.btn) {
+  border-radius: 30px;
+}
+.shell :global(.btn-primary) {
+  background: #e4eddc;
+  color: #172211;
+}
+.shell :global(.btn-primary:hover) {
+  background: #c6d9b5;
+}
+.shell :global(.form-input) {
+  background: #0d150c;
+  color: #edf3e8;
+  border-color: #ffffff24;
+}
+.shell :global(.badge-primary),
+.shell :global(.badge-muted) {
+  background: #ffffff0c;
+  color: #b8c9ad;
+}
+.shell :global(.badge-success) {
+  background: #8bb57918;
+  color: #b9d4ab;
+}
+.shell :global(.badge-warning) {
+  background: #c8ad691c;
+  color: #e4cd99;
+}
+@media (max-width: 760px) {
+  .shell {
+    width: 100%;
+    margin: 0;
+    border-radius: 0;
+  }
+}

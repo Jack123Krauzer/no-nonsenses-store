@@ -6,25 +6,25 @@ export const metadata: Metadata = {
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"
   ),
   title: {
-    default: "No-Nonsense Store — Premium Products, Honest Prices",
-    template: "%s | No-Nonsense Store",
+    default: "No Nonsenses — Wear your inside voice.",
+    template: "%s | No Nonsenses",
   },
   description:
-    "Discover curated premium products at honest prices. No fluff, no gimmicks — just quality.",
+    "Everyday clothing with an unapologetic sense of humour. A little attitude. A lot of you.",
   keywords: ["online store", "premium products", "no-nonsense store", "shopping"],
   openGraph: {
     type: "website",
     locale: "en_IN",
     url: process.env.NEXT_PUBLIC_SITE_URL,
-    siteName: "No-Nonsense Store",
-    title: "No-Nonsense Store — Premium Products, Honest Prices",
+    siteName: "No Nonsenses",
+    title: "No Nonsenses — Wear your inside voice.",
     description:
-      "Discover curated premium products at honest prices. No fluff, no gimmicks — just quality.",
+      "Everyday clothing with an unapologetic sense of humour. A little attitude. A lot of you.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "No-Nonsense Store",
-    description: "Premium products. Honest prices.",
+    title: "No Nonsenses",
+    description: "Wear your inside voice.",
   },
   robots: {
     index: true,

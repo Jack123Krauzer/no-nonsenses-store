@@ -1,8 +1,75 @@
-import { redirect } from 'next/navigation';
+import type { Metadata } from "next";
+import Link from "next/link";
+import GreenHome from "@/components/GreenHome/GreenHome";
+import ProductCard from "@/components/ProductCard/ProductCard";
+import {
+  getFeaturedProducts,
+  getAllCollections,
+} from "@/lib/shopify-storefront";
 
-// Open the complete, standalone green design from the branch homepage.
-// A full-page redirect keeps its styles, scripts, and scrolling isolated
-// from the existing store layout.
-export default function HomePage() {
-  redirect('/green-ui/index.html');
+export const metadata: Metadata = {
+  title: "No Nonsenses — Wear your inside voice.",
+  description:
+    "Everyday clothing with an unapologetic sense of humour. Explore the first No Nonsenses collection and shop our current catalog.",
+};
+
+export default async function HomePage() {
+  const [products, collections] = await Promise.all([
+    getFeaturedProducts(8),
+    getAllCollections(),
+  ]);
+  const demo = products.some(
+    (product) => product.isDemo || product.id.includes("fallback-"),
+  );
+  return (
+    <GreenHome>
+      <section
+        className="section live-catalog"
+        id="shop"
+        aria-labelledby="shop-title"
+      >
+        <div className="section-top">
+          <div>
+            <span className="kicker">THE STORE / CURRENT CATALOG</span>
+            <h2 id="shop-title">
+              Find your next
+              <br />
+              <span>good thing.</span>
+            </h2>
+          </div>
+          <Link href="/products" className="text-button">
+            Shop all products <span>↗</span>
+          </Link>
+        </div>
+        <div className="live-collections" aria-label="Shop collections">
+          {collections.map((collection) => (
+            <Link
+              key={collection.id}
+              href={`/collections/${collection.handle}`}
+            >
+              {collection.title} ↗
+            </Link>
+          ))}
+        </div>
+        {demo ? (
+          <p className="catalog-note">
+            Sample catalog — configure the existing Shopify connection to
+            display your live products. Concept clothing above is a separate
+            preview.
+          </p>
+        ) : null}
+        {products.length ? (
+          <div className="live-products">
+            {products.map((product) => (
+              <ProductCard key={product.id} product={product} />
+            ))}
+          </div>
+        ) : (
+          <p className="catalog-note">
+            Our next edit is on the way. Check back for new arrivals.
+          </p>
+        )}
+      </section>
+    </GreenHome>
+  );
 }
