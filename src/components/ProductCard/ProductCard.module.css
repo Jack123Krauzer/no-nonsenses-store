@@ -6,7 +6,7 @@
   position: relative;
   aspect-ratio: 1 / 1.12;
   background:
-    radial-gradient(ellipse at 50% 40%, #586d4540, transparent 80%), #151d13;
+    radial-gradient(ellipse at 50% 40%, #66666640, transparent 80%), #1b1b1b;
   border-radius: 16px;
   overflow: hidden;
 }
@@ -26,13 +26,13 @@
   display: grid;
   place-items: center;
   height: 100%;
-  color: #929989;
+  color: #969696;
 }
 .badge {
   position: absolute;
   left: 14px;
   top: 14px;
-  background: #172310ed;
+  background: #1f1f1fed;
   padding: 5px 9px;
   border-radius: 3px;
   font-size: 9px;
@@ -48,17 +48,17 @@
   height: 37px;
   border: 0;
   border-radius: 50%;
-  background: #dce8d1;
-  color: #172211;
+  background: #e4e4e4;
+  color: #1e1e1e;
   display: grid;
   place-items: center;
   transition:
     background 0.2s,
     color 0.2s;
-  box-shadow: 0 2px 12px #20241f08;
+  box-shadow: 0 2px 12px #23232308;
 }
 .quickAdd:hover {
-  background: #20241f;
+  background: #232323;
   color: white;
 }
 .quickAdd:disabled {

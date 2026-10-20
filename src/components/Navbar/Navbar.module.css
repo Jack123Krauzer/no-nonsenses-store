@@ -4,7 +4,7 @@
 .header {
   position: relative;
   z-index: 200;
-  background: #080b08;
+  background: #0a0a0a;
   border-bottom: 1px solid #ffffff08;
 }
 .inner {
@@ -31,12 +31,12 @@
   transform: rotate(-8deg);
 }
 .mark span {
-  color: #b7c8ad;
+  color: #c2c2c2;
 }
 .mark i {
   width: 5px;
   height: 5px;
-  background: #ecf3e6;
+  background: #f1f1f1;
   border-radius: 50%;
   position: absolute;
   right: -2px;
@@ -54,7 +54,7 @@
   letter-spacing: 0.17em;
   font-weight: 400;
   margin-top: 6px;
-  color: #99aa8e;
+  color: #a4a4a4;
 }
 .desktop {
   display: flex;
@@ -62,18 +62,18 @@
   padding: 5px;
   border: 1px solid #ffffff16;
   border-radius: 30px;
-  background: linear-gradient(120deg, #192019, #10160f);
+  background: linear-gradient(120deg, #1e1e1e, #141414);
   font-size: 11px;
 }
 .desktop a {
   padding: 10px 16px;
   border-radius: 25px;
-  color: #b4c0ab;
+  color: #bcbcbc;
 }
 .desktop a[aria-current="page"],
 .desktop a:hover {
   background: #ffffff0c;
-  color: #f5f7f1;
+  color: #f6f6f6;
 }
 .actions {
   display: flex;
@@ -83,7 +83,7 @@
 .search {
   display: flex;
   padding: 7px;
-  color: #c5d2bb;
+  color: #cecece;
 }
 .bag {
   display: flex;
@@ -98,7 +98,7 @@
   height: 23px;
   border: 1px solid #ffffff20;
   border-radius: 50%;
-  background: #1f2b1a;
+  background: #272727;
   font-size: 9px;
 }
 .menuButton {

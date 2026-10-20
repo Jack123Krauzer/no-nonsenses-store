@@ -1,6 +1,6 @@
 .footer {
-  background: #080b08;
-  color: #f7f6f2;
+  background: #0a0a0a;
+  color: #f6f6f6;
   padding: 64px 0 0;
 }
 .top {
@@ -20,7 +20,7 @@
   margin-left: 5px;
 }
 .brand p {
-  color: #b8bfb1;
+  color: #bdbdbd;
   font-size: 13px;
   line-height: 1.8;
   margin-top: 16px;
@@ -31,7 +31,7 @@
   gap: 14px;
 }
 .links > span {
-  color: #a6b19e;
+  color: #adadad;
   font-size: 9px;
   margin-bottom: 8px;
 }
@@ -43,13 +43,13 @@
   padding-bottom: 12px;
 }
 .links a:hover {
-  color: #c9d9bb;
+  color: #d3d3d3;
 }
 .note {
   padding-left: 20px;
 }
 .note > svg {
-  color: #b7c8ad;
+  color: #c2c2c2;
   margin-bottom: 14px;
 }
 .note p {
@@ -59,12 +59,12 @@
 }
 .note p strong {
   font-weight: 400;
-  color: #bdc7b6;
+  color: #c4c4c4;
 }
 .note > span {
   display: block;
   margin-top: 17px;
-  color: #a6b19e;
+  color: #adadad;
   font-size: 10px;
 }
 .bottom {
@@ -75,7 +75,7 @@
   padding-block: 22px;
   border-top: 1px solid #ffffff20;
   font-size: 10px;
-  color: #a6b19e;
+  color: #adadad;
 }
 .bottom a {
   display: flex;

@@ -1,8 +1,8 @@
-# No Nonsenses — Green UI
+# No Nonsenses — Black & White UI
 
-This branch contains the complete Next.js store from `master`, with the dark sage design implemented as native React components. The homepage at `/` renders the complete design directly—there is no static HTML redirect or embedded page.
+The complete Next.js store from `green-ui`, restyled in black, white, and neutral grey to match the supplied reference. The homepage uses a spacious atmospheric hero, frosted navigation, white light blooms, orbit lines, and a separate monochrome clothing campaign section.
 
-## Run the green project
+## Run this branch
 
 ```sh
 npm ci
@@ -10,13 +10,14 @@ cp .env.local.example .env.local
 npm run dev
 ```
 
-Open `http://localhost:3000/`. Configure the existing Shopify and Razorpay environment variables to use your real catalog and checkout. The homepage clearly separates the concept clothing preview from the existing store catalog.
+Open `http://localhost:3000/`. Stop any running Next.js server and clear `.next` when switching between theme branches.
 
-- Main design: `src/components/GreenHome/GreenHome.tsx` and `green-home.css`
-- Homepage/catalog: `src/app/(store)/page.tsx`
-- Shared theme: `src/app/(store)/store-layout.module.css`
-- Existing product, collection, cart, admin, and payment routes are retained.
-- Deploy this branch with the standard Next.js preset; no output-directory override is needed.
+- Native React homepage: `src/components/MonochromeHome/MonochromeHome.tsx`
+- Homepage styling: `src/components/MonochromeHome/monochrome-home.css`
+- Shared store theme: `src/app/(store)/store-layout.module.css`
+- Collection filters, product dialogs, size selection, mobile navigation, catalog, cart, admin, Shopify, and payment routes are retained.
+- Concept clothing previews are clearly separate from the current Shopify catalog.
+- Deploy using the standard Next.js preset from the `black-white-ui` branch.
 
 ---
 

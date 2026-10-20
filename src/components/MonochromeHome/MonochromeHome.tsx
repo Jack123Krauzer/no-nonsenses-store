@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useId, useRef, useState, type ReactNode } from "react";
-import "./green-home.css";
+import "./monochrome-home.css";
 
 type Filter = "all" | "tees" | "essentials";
 type Concept = {
@@ -41,13 +41,13 @@ const products: Concept[] = [
   {
     id: "essential",
     name: "The Unbothered Essential.",
-    subtitle: "Everyday tee / Sage",
-    colour: "Sage",
+    subtitle: "Everyday tee / Ash grey",
+    colour: "Ash grey",
     category: "essentials",
     tone: 2,
     mood: "FOR THE QUIETLY UNBOTHERED",
     description:
-      "Minimal words. Maximum you. A quiet sage concept for days when the brand name says enough.",
+      "Minimal words. Maximum you. A quiet ash-grey concept for days when the brand name says enough.",
   },
 ];
 const filters: { id: Filter; label: string }[] = [
@@ -70,11 +70,11 @@ function ProductArtwork({ tone }: { tone: number }) {
         >
           <defs>
             <linearGradient id={`${id}-black`} x1="0" x2="1">
-              <stop stopColor="#181b1a" />
-              <stop offset=".3" stopColor="#363b37" />
-              <stop offset=".55" stopColor="#242925" />
-              <stop offset=".8" stopColor="#323732" />
-              <stop offset="1" stopColor="#151916" />
+              <stop stopColor="#1a1a1a" />
+              <stop offset=".3" stopColor="#3a3a3a" />
+              <stop offset=".55" stopColor="#282828" />
+              <stop offset=".8" stopColor="#363636" />
+              <stop offset="1" stopColor="#181818" />
             </linearGradient>
             <filter id={`${id}-shadow`}>
               <feDropShadow
@@ -89,25 +89,25 @@ function ProductArtwork({ tone }: { tone: number }) {
             <path
               d="M137 49 99 62 30 135 80 189 110 165 98 384Q200 402 302 384L290 165 320 189 370 135 301 62 263 49Q200 84 137 49Z"
               fill={`url(#${id}-black)`}
-              stroke="#484e47"
+              stroke="#4c4c4c"
               strokeWidth="1.4"
             />
             <path
               d="M137 49Q145 111 200 111T263 49Q200 80 137 49"
-              fill="#121613"
-              stroke="#4a5048"
+              fill="#151515"
+              stroke="#4e4e4e"
               strokeWidth="3"
             />
             <path
               d="M111 165 120 112M290 165 280 112M111 374Q200 389 291 374"
               fill="none"
-              stroke="#53594f"
+              stroke="#575757"
               opacity=".4"
             />
             <path
               d="M132 198q-9 72 0 152M269 206q12 69 0 144"
               fill="none"
-              stroke="#555e52"
+              stroke="#5b5b5b"
               opacity=".2"
               strokeWidth="4"
             />
@@ -116,7 +116,7 @@ function ProductArtwork({ tone }: { tone: number }) {
             x="200"
             y="191"
             textAnchor="middle"
-            fill="#ecebdc"
+            fill="#eaeaea"
             fontFamily="Arial,sans-serif"
             fontWeight="800"
             fontSize="19"
@@ -128,7 +128,7 @@ function ProductArtwork({ tone }: { tone: number }) {
             x="200"
             y="214"
             textAnchor="middle"
-            fill="#ecebdc"
+            fill="#eaeaea"
             fontFamily="Arial,sans-serif"
             fontWeight="800"
             fontSize="19"
@@ -140,7 +140,7 @@ function ProductArtwork({ tone }: { tone: number }) {
             x="200"
             y="235"
             textAnchor="middle"
-            fill="#b0b4a8"
+            fill="#b2b2b2"
             fontFamily="Arial"
             fontSize="5"
             letterSpacing="2"
@@ -169,36 +169,36 @@ function ProductArtwork({ tone }: { tone: number }) {
               />
             </filter>
             <linearGradient id={`${id}-cream`} x1="0" x2="1">
-              <stop stopColor="#a4a498" />
-              <stop offset=".3" stopColor="#dedfd1" />
-              <stop offset=".55" stopColor="#c8cbbd" />
-              <stop offset=".8" stopColor="#e4e4d7" />
-              <stop offset="1" stopColor="#929b8c" />
+              <stop stopColor="#a3a3a3" />
+              <stop offset=".3" stopColor="#dedede" />
+              <stop offset=".55" stopColor="#c9c9c9" />
+              <stop offset=".8" stopColor="#e3e3e3" />
+              <stop offset="1" stopColor="#989898" />
             </linearGradient>
           </defs>
           <g filter={`url(#${id}-shadow)`}>
             <path
               d="M137 49 99 62 30 135 80 189 110 165 98 384Q200 402 302 384L290 165 320 189 370 135 301 62 263 49Q200 84 137 49Z"
               fill={`url(#${id}-cream)`}
-              stroke="#d0d3c5"
+              stroke="#d1d1d1"
               strokeWidth="1.4"
             />
             <path
               d="M137 49Q145 111 200 111T263 49Q200 80 137 49"
-              fill="#7e8878"
-              stroke="#b8bfae"
+              fill="#858585"
+              stroke="#bcbcbc"
               strokeWidth="3"
             />
             <path
               d="M111 165 120 112M290 165 280 112M111 374Q200 389 291 374"
               fill="none"
-              stroke="#7a8473"
+              stroke="#818181"
               opacity=".5"
             />
             <path
               d="M132 198q-9 72 0 152M269 206q12 69 0 144"
               fill="none"
-              stroke="#7a8473"
+              stroke="#818181"
               opacity=".15"
               strokeWidth="4"
             />
@@ -207,7 +207,7 @@ function ProductArtwork({ tone }: { tone: number }) {
             x="200"
             y="190"
             textAnchor="middle"
-            fill="#2d352c"
+            fill="#333333"
             fontFamily="Arial,sans-serif"
             fontWeight="700"
             fontSize="21"
@@ -222,16 +222,16 @@ function ProductArtwork({ tone }: { tone: number }) {
             height="24"
             rx="4"
             fill="none"
-            stroke="#35402f"
+            stroke="#3c3c3c"
             strokeWidth="2"
           />
-          <rect x="229" y="211" width="4" height="10" rx="1" fill="#35402f" />
-          <rect x="174" y="208" width="5" height="16" rx="1" fill="#35402f" />
+          <rect x="229" y="211" width="4" height="10" rx="1" fill="#3c3c3c" />
+          <rect x="174" y="208" width="5" height="16" rx="1" fill="#3c3c3c" />
           <text
             x="202"
             y="221"
             textAnchor="middle"
-            fill="#35402f"
+            fill="#3c3c3c"
             fontFamily="Arial"
             fontSize="12"
           >
@@ -241,7 +241,7 @@ function ProductArtwork({ tone }: { tone: number }) {
             x="200"
             y="248"
             textAnchor="middle"
-            fill="#5f6956"
+            fill="#666666"
             fontFamily="Arial"
             fontSize="5"
             letterSpacing="2"
@@ -253,12 +253,12 @@ function ProductArtwork({ tone }: { tone: number }) {
     );
   if (tone === 2)
     return (
-      <div className="tee-scene green-tee">
+      <div className="tee-scene grey-tee">
         <svg
           className="shirt"
           viewBox="0 0 400 440"
           role="img"
-          aria-label="Sage essential tee with No Nonsenses print"
+          aria-label="Ash-grey essential tee with No Nonsenses print"
         >
           <defs>
             <filter id={`${id}-shadow`}>
@@ -270,36 +270,36 @@ function ProductArtwork({ tone }: { tone: number }) {
               />
             </filter>
             <linearGradient id={`${id}-sage`} x1="0" x2="1">
-              <stop stopColor="#576250" />
-              <stop offset=".3" stopColor="#93a28a" />
-              <stop offset=".55" stopColor="#788b70" />
-              <stop offset=".8" stopColor="#9ba992" />
-              <stop offset="1" stopColor="#52634b" />
+              <stop stopColor="#5e5e5e" />
+              <stop offset=".3" stopColor="#9d9d9d" />
+              <stop offset=".55" stopColor="#858585" />
+              <stop offset=".8" stopColor="#a4a4a4" />
+              <stop offset="1" stopColor="#5e5e5e" />
             </linearGradient>
           </defs>
           <g filter={`url(#${id}-shadow)`}>
             <path
               d="M137 49 99 62 30 135 80 189 110 165 98 384Q200 402 302 384L290 165 320 189 370 135 301 62 263 49Q200 84 137 49Z"
               fill={`url(#${id}-sage)`}
-              stroke="#a3b399"
+              stroke="#aeaeae"
               strokeWidth="1.4"
             />
             <path
               d="M137 49Q145 111 200 111T263 49Q200 80 137 49"
-              fill="#354831"
-              stroke="#829478"
+              fill="#424242"
+              stroke="#8e8e8e"
               strokeWidth="3"
             />
             <path
               d="M111 165 120 112M290 165 280 112M111 374Q200 389 291 374"
               fill="none"
-              stroke="#4b6243"
+              stroke="#5b5b5b"
               opacity=".65"
             />
             <path
               d="M132 198q-9 72 0 152M269 206q12 69 0 144"
               fill="none"
-              stroke="#344c2c"
+              stroke="#454545"
               opacity=".15"
               strokeWidth="4"
             />
@@ -308,7 +308,7 @@ function ProductArtwork({ tone }: { tone: number }) {
             x="200"
             y="200"
             textAnchor="middle"
-            fill="#24321f"
+            fill="#2e2e2e"
             fontFamily="Arial,sans-serif"
             fontWeight="800"
             fontSize="18"
@@ -320,7 +320,7 @@ function ProductArtwork({ tone }: { tone: number }) {
             x="200"
             y="217"
             textAnchor="middle"
-            fill="#34482d"
+            fill="#424242"
             fontFamily="Arial"
             fontSize="5"
             letterSpacing="3"
@@ -360,7 +360,7 @@ function ConceptCard({
           <p>{product.subtitle}</p>
         </div>
         <span
-          className={`swatch ${["black", "cream", "sage"][product.tone]}`}
+          className={`swatch ${["black", "cream", "ash"][product.tone]}`}
           aria-label={product.colour}
         />
       </div>
@@ -368,7 +368,7 @@ function ConceptCard({
   );
 }
 
-export default function GreenHome({ children }: { children: ReactNode }) {
+export default function MonochromeHome({ children }: { children: ReactNode }) {
   const [activeFilter, setActiveFilter] = useState<Filter>("all");
   const [activeProduct, setActiveProduct] = useState<Concept | null>(null);
   const [selectedSize, setSelectedSize] = useState("M");
@@ -393,7 +393,7 @@ export default function GreenHome({ children }: { children: ReactNode }) {
     setSelectedSize("M");
   }
   return (
-    <div className="green-home">
+    <div className="monochrome-home">
       <section className="hero" aria-labelledby="hero-title">
         <div className="hero-glow"></div>
         <div className="hero-grid"></div>
@@ -409,32 +409,30 @@ export default function GreenHome({ children }: { children: ReactNode }) {
             you. <span>↗</span>
           </a>
           <h1 id="hero-title">
-            Wear your
-            <br />
-            <span>inside voice.</span>
+            Wear your <span>inside voice.</span>
           </h1>
           <p>
-            For the things you think. And probably shouldn't say.
-            <br />
-            Everyday clothing with an unapologetic sense of humour.
+            Everyday clothing for the things you think. And probably shouldn’t say.
           </p>
           <div className="hero-actions">
             <a className="button light" href="#collection">
               Find your kind of nonsense <span>↗</span>
             </a>
-            <a className="text-button" href="#manifesto">
+            <a className="button ghost-button" href="#manifesto">
               Meet the brand <span>↓</span>
             </a>
           </div>
         </div>
-        <div className="hero-art">
-          <Image
-            src="/images/green-campaign.webp"
-            alt="No Nonsenses concept tees in washed black, off-white, and sage, with witty graphic prints"
-            width="1536"
-            height="1024"
-            priority
-          />
+        <div className="hero-orbits" aria-hidden="true">
+          <svg viewBox="0 0 1440 760" preserveAspectRatio="none">
+            <path d="M0 180H200C275 180 290 105 370 105M1070 105C1150 105 1165 180 1240 180H1440M0 565H175C260 565 280 640 365 640M1075 640C1160 640 1180 565 1265 565H1440" />
+          </svg>
+          <i />
+          <i />
+          <i />
+        </div>
+        <div className="hero-emblem" aria-hidden="true">
+          ✳
         </div>
         <div className="orbit-label label-left">
           <span className="circle-icon">✳</span>
@@ -468,6 +466,26 @@ export default function GreenHome({ children }: { children: ReactNode }) {
         <i>✳</i>
         <span>NO NONSENSES</span>
       </div>
+      <section className="campaign-section" aria-labelledby="campaign-heading">
+        <div className="campaign-caption">
+          <span className="kicker">COLLECTION 001 / THE INSIDE VOICE CLUB</span>
+          <h2 id="campaign-heading">
+            Attitude. <span>In black and white.</span>
+          </h2>
+        </div>
+        <div className="campaign-art">
+          <Image
+            src="/images/monochrome-campaign.webp"
+            alt="No Nonsenses concept tees in black, white, and ash grey"
+            width={1536}
+            height={1024}
+            sizes="(max-width:760px) 100vw, 85vw"
+          />
+        </div>
+        <a className="campaign-link" href="#collection">
+          Explore the concepts <span>↗</span>
+        </a>
+      </section>
       <section id="collection" className="section collection">
         <div className="section-top">
           <div>

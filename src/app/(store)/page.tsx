@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import GreenHome from "@/components/GreenHome/GreenHome";
+import MonochromeHome from "@/components/MonochromeHome/MonochromeHome";
 import ProductCard from "@/components/ProductCard/ProductCard";
 import {
   getFeaturedProducts,
@@ -22,7 +22,7 @@ export default async function HomePage() {
     (product) => product.isDemo || product.id.includes("fallback-"),
   );
   return (
-    <GreenHome>
+    <MonochromeHome>
       <section
         className="section live-catalog"
         id="shop"
@@ -70,6 +70,6 @@ export default async function HomePage() {
           </p>
         )}
       </section>
-    </GreenHome>
+    </MonochromeHome>
   );
 }
