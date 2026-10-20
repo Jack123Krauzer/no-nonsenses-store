@@ -26,15 +26,16 @@
   flex-direction: column;
   background: #000;
   color: var(--color-text);
-  width: min(1536px, calc(100% - 72px));
-  margin: 48px auto;
-  border-radius: 28px;
+  width: 100%;
+  margin: 0;
+  border-radius: 0;
   overflow: clip;
   color-scheme: dark;
 }
 .main {
   flex: 1;
   min-width: 0;
+  width: 100%;
 }
 .skipLink {
   position: fixed;
